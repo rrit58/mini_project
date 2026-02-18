@@ -1,10 +1,12 @@
 import React from 'react'
+import Homepage from './pages/Homepage'
 
 const App = () => {
   return (
-    <div className='text-5xl'>
-      Hello World      
+    <div>
+      <Homepage/>
     </div>
+   
   )
 }
 

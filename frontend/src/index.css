@@ -1,1 +1,40 @@
 @import "tailwindcss";
+/* #026E81 */
+/* #00B4D8 */
+/* #253237 */
+/* #0099DD */
+
+@theme {
+  /* Swatch 3: Dark Teal(Main Navbar Background) */
+  --color-primary:  #4F8BB0 ;
+  
+  /* Swatch 2: Aqua (Hover States / Lighter accents) */
+  --color-primary-light: #84F2FE;
+
+  /* Swatch 1: Bright Blue  (Right Side "Deep" Background) */
+  --color-tertiary:  #01AABC ;
+  
+  /* Swatch 4: Orange (High Contrast Action Button) */
+  --color-accent: #FF9933 ;
+  --color-accent-hover: #e68a00;
+
+  /* Swatch 5: Pale Blue (Backgrounds if needed) */
+  --color-secondary-light: #A1C7E0;
+
+  /* Text Colors */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-background-card: #ffffff;
+}
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+      display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+  }
+}
