@@ -1,17 +1,21 @@
 import React, { useContext, useState } from 'react'
-import { AppContext } from '../Appcontext';
+import { AppContext, useAppContext } from '../Appcontext';
 import Card from './Card'
 import rightArrow from '../assets/rightArrow.png'
 
 const Doctors = () => {
   // 1. Consume the data from Context
-  const { doctors } = useContext(AppContext);
+  const { topDoctors } = useAppContext();
+  console.log(topDoctors)
 
   // 2. UI State for "Show More" functionality
-  const [visibleDoctors, setVisibleDoctors] = useState(10);
+  const [visibleDoctors, setVisibleDoctors] = useState(5);
 
   const handleMore = () => {
-    setVisibleDoctors((prev) => prev + 10);
+    setVisibleDoctors((prev) => prev + 5);
+  }
+  const handleLess=()=>{
+    setVisibleDoctors(5);
   }
 
   return (
@@ -23,17 +27,17 @@ const Doctors = () => {
       </p>
 
       {/* --- GRID LAYOUT --- */}
-      <div className='w-full grid grid-cols-5 gap-4 pt-5 gap-y-6 px-3 sm:px-0'>
+      <div className='w-full grid lg:grid-cols-5  md:grid-cols-3 sm:grid-cols-2 gap-4 pt-5 gap-y-6 px-3 sm:px-0'>
         
         {/* Render the doctors from Context */}
-        {doctors.slice(0, visibleDoctors).map((item, idx) => (
+        {topDoctors.slice(0, visibleDoctors).map((item, idx) => (
            <Card key={idx} {...item} />
         ))}
 
       </div>
 
       {/* Show More Button Logic */}
-      {visibleDoctors < doctors.length && (
+      {visibleDoctors < topDoctors.length ? (
         <button  
             onClick={handleMore}
             className='bg-white flex gap-2 text-primary border-2  px-12 py-3 rounded-full mt-10 hover:bg-pimary-light hover:text-black transition-all duration-300 font-medium'
@@ -41,7 +45,13 @@ const Doctors = () => {
            See More 
             <img src={rightArrow} alt="rightarrow" />
         </button>
-      )}
+      ): ( <button  
+            onClick={handleLess}
+            className='bg-white flex gap-2 text-primary border-2  px-12 py-3 rounded-full mt-10 hover:bg-pimary-light hover:text-black transition-all duration-300 font-medium'
+        >
+           See Less 
+            
+        </button>)}
 
     </div>
   )
