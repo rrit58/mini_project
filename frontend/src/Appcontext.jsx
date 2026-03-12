@@ -1,10 +1,10 @@
-import React, { createContext, useState } from 'react';
-// Import the data here so it's available globally
-import { doctors } from './assets/doctors'; 
+import React, { createContext, useState, useContext } from 'react';
+import { doctors, topDoctors } from './assets/doctors'; 
+import { departments } from './assets/departments';
 
 export const AppContext = createContext();
 
-const AppContextProvider = (props) => {
+export const AppContextProvider = ({children}) => {
 
   const [userData, setUserData] = useState(null);
   
@@ -12,13 +12,16 @@ const AppContextProvider = (props) => {
     doctors,    
     userData,
     setUserData,
+    topDoctors
   };
 
   return (
     <AppContext.Provider value={value}>
-      {props.children}
+      {children}
     </AppContext.Provider>
   );
 };
 
-export default AppContextProvider;
+export const useAppContext=()=>{
+    return useContext(AppContext);
+}

@@ -1,7 +1,11 @@
 import React from 'react'
 import { departments } from '../assets/departments'
-
+import { useAppContext } from '../Appcontext'
+import { useNavigate } from 'react-router-dom';
 const Departments = () => {
+
+    
+    const navigate = useNavigate();
   return (
     <div className='flex flex-col items-center gap-4 py-16 text-gray-800 ' >
         
@@ -17,7 +21,7 @@ const Departments = () => {
         {/* Added 'w-full max-w-5xl' to control width on large screens */}
         <div className="w-full max-w-6xl px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 pt-5">
             {departments.map((item, index) => (
-                <div 
+                <div  onClick={() => navigate(`/doctors/${item.dep}`)}
                     key={index} 
                     className="group flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-2 cursor-pointer"
                 >

@@ -1,24 +1,19 @@
 @import "tailwindcss";
-/* #026E81 */
-/* #00B4D8 */
-/* #253237 */
-/* #0099DD */
+
 
 @theme {
-  /* Swatch 3: Dark Teal(Main Navbar Background) */
+ 
   --color-primary:  #4F8BB0 ;
   
-  /* Swatch 2: Aqua (Hover States / Lighter accents) */
   --color-primary-light: #84F2FE;
 
-  /* Swatch 1: Bright Blue  (Right Side "Deep" Background) */
+ 
   --color-tertiary:  #01AABC ;
   
-  /* Swatch 4: Orange (High Contrast Action Button) */
   --color-accent: #FF9933 ;
   --color-accent-hover: #e68a00;
 
-  /* Swatch 5: Pale Blue (Backgrounds if needed) */
+ 
   --color-secondary-light: #A1C7E0;
 
   /* Text Colors */
@@ -37,4 +32,34 @@
       -ms-overflow-style: none;  /* IE and Edge */
       scrollbar-width: none;  /* Firefox */
   }
+}
+/* Override react-datepicker default blue with Care Connect Emerald */
+.react-datepicker__day--selected, 
+.react-datepicker__day--in-selecting-range, 
+.react-datepicker__day--in-range, 
+.react-datepicker__month-text--selected, 
+.react-datepicker__month-text--in-selecting-range, 
+.react-datepicker__month-text--in-range, 
+.react-datepicker__quarter-text--selected, 
+.react-datepicker__quarter-text--in-selecting-range, 
+.react-datepicker__quarter-text--in-range, 
+.react-datepicker__year-text--selected, 
+.react-datepicker__year-text--in-selecting-range, 
+.react-datepicker__year-text--in-range,
+.react-datepicker__day--keyboard-selected {
+  background-color: #FF9933 !important; /* Tailwind emerald-600 */
+  color: #84F2FE!important;
+}
+
+.react-datepicker__day--selected:hover, 
+.react-datepicker__day--keyboard-selected:hover {
+  background-color:#e68a00 !important; /* Tailwind emerald-700 */
+}
+.react-datepicker__header select {
+  background-color: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 2px 4px;
+  color: #475569;
+  outline: none;
 }

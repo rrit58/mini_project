@@ -1,0 +1,62 @@
+/* LegalPages.css */
+
+.legal-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  line-height: 1.6;
+  color: #374151; /* Dark gray for readability */
+}
+
+.legal-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #083344; /* Cyan 950 */
+  margin-bottom: 1rem;
+}
+
+.legal-last-updated {
+  font-size: 0.875rem;
+  color: #6b7280; /* Medium gray */
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.legal-heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #164e63; /* Cyan 900 */
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.legal-paragraph {
+  margin-bottom: 1rem;
+}
+
+.legal-list {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #4b5563; /* Slightly lighter gray for lists */
+}
+
+.legal-list li {
+  margin-bottom: 0.5rem;
+}
+
+.legal-strong {
+  font-weight: 600;
+  color: #111827; /* Near black for emphasis */
+}
+
+.legal-address {
+  font-style: normal;
+  color: #4b5563;
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #f3f4f6;
+  margin-top: 0.5rem;
+}
