@@ -60,7 +60,7 @@ const Appointment = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-3xl shadow-xl shadow-emerald-100 p-10 max-w-md w-full text-center">
           <div className="w-16 h-16  rounded-2xl flex items-center justify-center mx-auto mb-5">
             <img src={logo} alt="logo" />

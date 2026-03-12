@@ -15,7 +15,7 @@ const DoctorsCard = ({ doctor }) => {
           className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" 
         />
         {/* Subtle gradient overlay at the bottom of the image */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-gradient-to-t from-black/20 to-transparent"></div>
       </div>
 
       {/* Content Container */}
