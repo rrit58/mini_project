@@ -1,5 +1,4 @@
 import React from 'react'
-import Navbar from '../components/Navbar'
 import Mainbanner from '../components/Mainbanner'
 import Departments from '../components/Departments'
 import Doctors from '../components/Doctors'
@@ -9,7 +8,6 @@ import Footer from '../components/Footer'
 const Homepage = () => {
   return (
     <div  >
-      <Navbar/>
       <Mainbanner/>
       <Departments/>
       <Doctors/>
