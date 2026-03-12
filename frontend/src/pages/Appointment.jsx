@@ -42,6 +42,8 @@ const Appointment = () => {
     dob: '', gender: '', department: '', doctor: '',
     date: '', time: '', reason: '', notes: '',
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -95,12 +97,12 @@ const Appointment = () => {
 
       {/* Header */}
       <div className="flex items-center gap-5 mb-8 ">
-        <div className="w-15 h-15  rounded-xl flex items-center justify-center shadow-md shadow-primary-light/100 ">
+        {/* <div className="w-15 h-15  rounded-xl flex items-center justify-center shadow-md shadow-primary-light/100 ">
            <img src={logo} alt="logo" />
-        </div>
+        </div> */}
         <div>
-          <p className="text-3xl font-bold text-accent leading-none">Care Connect</p>
-          <p className="text-md text-text-secondary mt-0.3">Book your appointment</p>
+          {/* <p className="text-3xl font-bold text-accent leading-none">Care Connect</p> */}
+          <p className="text-md text-5xl font-bold text-text-secondary mt-0.3">Book your appointment</p>
         </div>
       </div>
 
@@ -131,7 +133,11 @@ const Appointment = () => {
       </div>
 
       {/* Card */}
-      <div className="bg-primary-light/10 rounded-3xl shadow-xl shadow-tertiary w-full max-w-md overflow-hidden">
+      <form 
+        onSubmit={e => e.preventDefault()} 
+        className="bg-primary-light/10 rounded-3xl shadow-xl shadow-tertiary w-full max-w-md overflow-hidden" 
+        autoComplete="off"
+      >
         <div className="h-1.5 bg-primary" />
 
         <div className="p-7">
@@ -341,20 +347,45 @@ const Appointment = () => {
               </div>
 
               <div className="flex justify-between mt-7">
-                <button onClick={() => setStep(2)} className="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-500 border border-slate-200 hover:border-slate-300 transition cursor-pointer">
+                <button onClick={() => setStep(2)} className="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-500 border border-slate-200 hover:border-slate-300 transition cursor-pointer" disabled={isSubmitting}>
                   ← Back
                 </button>
-                <button disabled={!step3OK} onClick={() => setSubmitted(true)}
-                  className={`px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition
-                    ${step3OK ? 'bg-primary hover:bg-primary-light hover:text-text-primary shadow-md shadow-primary-light cursor-pointer' : 'bg-accent text-text-secondary cursor-not-allowed'}`}>
-                  Confirm Appointment ✓
-                </button>
+                <div className="flex flex-col items-end">
+                  <button 
+                    disabled={!step3OK || isSubmitting} 
+                    onClick={async () => {
+                      setIsSubmitting(true);
+                      setSubmitError('');
+                      try {
+                        const response = await fetch('http://localhost:5000/api/appointments', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(form)
+                        });
+                        const data = await response.json();
+                        if (response.ok && data.success) {
+                          setSubmitted(true);
+                        } else {
+                          setSubmitError(data.message || 'Failed to book appointment');
+                        }
+                      } catch (err) {
+                        setSubmitError('Server error. Please try again later.');
+                      } finally {
+                        setIsSubmitting(false);
+                      }
+                    }}
+                    className={`px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition
+                      ${(step3OK && !isSubmitting) ? 'bg-primary hover:bg-primary-light hover:text-text-primary shadow-md shadow-primary-light cursor-pointer' : 'bg-accent text-text-secondary cursor-not-allowed'}`}>
+                    {isSubmitting ? 'Booking...' : 'Confirm Appointment ✓'}
+                  </button>
+                  {submitError && <p className="text-red-500 text-xs mt-2">{submitError}</p>}
+                </div>
               </div>
             </div>
           )}
 
         </div>
-      </div>
+      </form>
 
       <p className="text-xs text-slate-400 mt-6">Your information is safe and encrypted 🔒</p>
     </div>

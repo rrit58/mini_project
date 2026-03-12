@@ -64,14 +64,14 @@ const AllDoctors = () => {
         <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full border border-white/5 pointer-events-none" />
         <div className="absolute -bottom-16 -right-16 w-64 h-64 rounded-full border border-white/5 pointer-events-none" />
 
-        {/* Logo */}
+        {/* Logo
         <div className="flex items-center justify-center gap-3 mb-8">
           <img className="h-10 w-auto object-contain" src="../src/assets/logo2.png" alt="CareConnect" />
           <span className="font-extrabold text-xl tracking-tight flex">
             <span className="text-violet-100">Care</span>
             <span className="text-amber-500">Connect</span>
           </span>
-        </div>
+        </div> */}
 
         <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/15 py-1.5 px-4 rounded-full mb-5">
           <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Footer from '../components/Footer'
 
 // --- 1. DUMMY DATA ---
 const contactDetails = {
@@ -50,29 +51,28 @@ const Contact = () => {
   const inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-800 text-sm placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all bg-gray-50 focus:bg-white"
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50">
       
-      {/* Header Section */}
-      <div className="max-w-7xl mx-auto text-center mb-16">
-        <h1 className="flex flex-wrap items-center justify-center gap-x-3 gap-y-4 text-4xl font-bold text-gray-900 mb-4 tracking-tight">
-            <span>Get in Touch with</span>
-            
-            {/* This wrapper keeps the logo and brand name glued together perfectly aligned */}
-            <span className="flex items-center gap-2">
-            <img className='h-12 w-auto object-contain' src="../src/assets/logo2.png" alt="logo" />
-            <span className="font-bold text-4xl tracking-wide drop-shadow-sm bg-primary rounded-3xl px-3 py-1">
-                <span className="text-violet-100">Care </span>
-                <span className="text-amber-500">Connect</span>
-            </span>
-            </span>
+      {/* Hero Header */}
+      <div className="bg-cyan-950 pt-14 pb-20 px-4 text-center relative overflow-hidden">
+        {/* Decorative rings */}
+        <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full border border-white/5 pointer-events-none" />
+        <div className="absolute -bottom-16 -right-16 w-64 h-64 rounded-full border border-white/5 pointer-events-none" />
+
+        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/15 py-1.5 px-4 rounded-full mb-5">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+          <p className="text-xs font-semibold tracking-widest text-cyan-300 uppercase">24/7 Support Available</p>
+        </div>
+
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
+          Get in <span className="text-cyan-400">Touch</span>
         </h1>
-        
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto mt-4">
-            Whether you have a question about an appointment, need assistance with our platform, or just want to provide feedback, our team is here to help.
+        <p className="text-cyan-200 text-base md:text-lg max-w-xl mx-auto leading-relaxed font-light">
+          Whether you have a question about an appointment, need assistance with our platform, or just want to provide feedback, our team is here to help.
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 px-4 sm:px-6 lg:px-8 -mt-8 relative z-10 pb-20">
         
         {/* LEFT COLUMN: Contact Information */}
         <div className="space-y-8">
@@ -130,7 +130,7 @@ const Contact = () => {
           <h3 className="text-2xl font-bold text-text-primary mb-2">Send us a Message</h3>
           <p className="text-sm text-text-secondary mb-8">Fill out the form below and we'll get back to you within 24 hours.</p>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
             <div>
               <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wide mb-1.5">Full Name *</label>
               <input 
@@ -182,6 +182,7 @@ const Contact = () => {
         </div>
 
       </div>
+      <Footer />
     </div>
   )
 }

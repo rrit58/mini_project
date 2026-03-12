@@ -1,10 +1,12 @@
 import React from 'react'
-
-
+import { useAppContext } from '../../Appcontext'
+import { toast } from 'react-toastify'
 
 const inputCls='flex items-center w-full bg-white border border-primary focus-within:border-primary-light focus-within:ring-1 focus-within:ring-primary-light h-12 rounded-xl overflow-hidden px-4 gap-3 transition-all'
 const UserLogin = ({ onClose }) => {
     const [state, setState] = React.useState("login")
+    const [isSubmitting, setIsSubmitting] = React.useState(false)
+    const { loadUserProfile } = useAppContext()
 
     const [formData, setFormData] = React.useState({
         name: '',
@@ -17,9 +19,45 @@ const UserLogin = ({ onClose }) => {
         setFormData(prev => ({ ...prev, [name]: value }))
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log("Form Submitted:", formData)
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+        try {
+            const endpoint = state === "login" ? "login" : "register";
+            const response = await fetch(`http://localhost:5000/api/users/${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                localStorage.setItem('token', data.token);
+                await loadUserProfile(); // Load profile immediately
+                
+                // If the backend returns user data, we can use it, otherwise let's just say "Welcome!"
+                const userName = data.user?.name || formData.name || 'User';
+                if (state === "login") {
+                    toast.success(`Welcome, ${userName}!`);
+                } else {
+                    toast.success(`Account created successfully, ${userName}!`);
+                }
+                
+                // Reset form so old data isn't there next time it opens
+                setFormData({ name: '', email: '', password: '' });
+                onClose();
+            } else {
+                toast.error(data.message || 'Authentication failed');
+            }
+        } catch (error) {
+            console.error("Error during authentication:", error);
+            toast.error("An error occurred. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     return (
@@ -39,6 +77,7 @@ const UserLogin = ({ onClose }) => {
                 onSubmit={handleSubmit}
                 onClick={(e) => e.stopPropagation()} // Prevents clicking inside the card from closing it
                 className="relative w-full max-w-[400px] text-center bg-indigo-50 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 shadow-2xl"
+                autoComplete="off"
             >
                 {/* Close Button */}
                 <button 
@@ -62,20 +101,20 @@ const UserLogin = ({ onClose }) => {
                     {state !== "login" && (
                         <div className={inputCls}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-slate-400" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <circle cx="12" cy="8" r="5" /> <path d="M20 21a8 8 0 0 0-16 0" /> </svg>
-                            <input type="text" name="name" placeholder="Full Name" className="w-full bg-transparent text-white placeholder-primary border-none outline-none text-sm" value={formData.name} onChange={handleChange} required />
+                            <input type="text" name="name" placeholder="Full Name" className="w-full bg-transparent text-black placeholder-primary border-none outline-none text-sm" value={formData.name} onChange={handleChange} required />
                         </div>
                     )}
 
                     {/* Email Input */}
                     <div className={inputCls}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-slate-400" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /> <rect x="2" y="4" width="20" height="16" rx="2" /> </svg>
-                        <input type="email" name="email" placeholder="Email Address" className="w-full bg-transparent text-white placeholder-primary border-none outline-none text-sm" value={formData.email} onChange={handleChange} required />
+                        <input type="email" name="email" placeholder="Email Address" className="w-full bg-transparent text-black placeholder-primary border-none outline-none text-sm" value={formData.email} onChange={handleChange} required autoComplete="new-email" />
                     </div>
 
                     {/* Password Input */}
                     <div className={inputCls}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-slate-400" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 10 0v4" /> </svg>
-                        <input type="password" name="password" placeholder="Password" className="w-full bg-transparent text-white placeholder-slate-500 border-none outline-none text-sm" value={formData.password} onChange={handleChange} required />
+                        <input type="password" name="password" placeholder="Password" className="w-full bg-transparent text-black placeholder-slate-500 border-none outline-none text-sm" value={formData.password} onChange={handleChange} required autoComplete="new-password" />
                     </div>
                 </div>
 
@@ -91,9 +130,10 @@ const UserLogin = ({ onClose }) => {
                 {/* Submit Button */}
                 <button 
                     type="submit" 
-                    className="mt-6 w-full h-12 rounded-xl text-white font-semibold tracking-wide bg-accent hover:bg-accent-hover shadow-lg shadow-indigo-600/30 transition-all active:scale-[0.98] cursor-pointer" 
-                >
-                    {state === "login" ? "Login" : "Create Account"}
+                    disabled={isSubmitting}
+                    className="mt-6 w-full h-12 rounded-xl text-white font-semibold tracking-wide bg-accent hover:bg-accent-hover shadow-lg shadow-indigo-600/30 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed" 
+                >   
+                    {isSubmitting ? "Please wait..." : (state === "login" ? "Login" : "Create Account")}
                 </button>
 
                 {/* Toggle Login/Register */}

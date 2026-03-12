@@ -63,13 +63,13 @@ const About = () => {
         <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full border border-white/5 pointer-events-none" />
 
         {/* Logo */}
-        <div className="flex items-center justify-center gap-3 mb-10">
+        {/* <div className="flex items-center justify-center gap-3 mb-10">
           <img className="h-10 w-auto object-contain" src="../src/assets/logo2.png" alt="CareConnect" />
           <span className="font-extrabold text-xl tracking-tight flex">
             <span className="text-violet-100">Care</span>
             <span className="text-amber-500">Connect</span>
           </span>
-        </div>
+        </div> */}
 
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/15 py-1.5 px-4 rounded-full mb-6">
