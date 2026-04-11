@@ -20,7 +20,7 @@ const App = () => {
     <div>
       <ToastContainer position="top-right" autoClose={3000} />
       <Navbar />
-      <div className="pt-[72px] lg:pt-20">
+      <div className="pt-18 lg:pt-20">
         <Routes>
            <Route  path='/' element={<Homepage/>} />
          <Route  path='/appointment' element={<Appointment/>} />

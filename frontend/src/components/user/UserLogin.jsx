@@ -11,7 +11,8 @@ const UserLogin = ({ onClose }) => {
     const [formData, setFormData] = React.useState({
         name: '',
         email: '',
-        password: ''
+        password: '',
+        token: ''
     })
 
     const handleChange = (e) => {
@@ -23,35 +24,72 @@ const UserLogin = ({ onClose }) => {
         e.preventDefault();
         if (isSubmitting) return;
         setIsSubmitting(true);
+
         try {
-            const endpoint = state === "login" ? "login" : "register";
+            let endpoint;
+            let payload;
+
+            if (state === 'login' || state === 'register') {
+                endpoint = state === 'login' ? 'login' : 'register';
+                payload = {
+                    name: formData.name,
+                    email: formData.email,
+                    password: formData.password
+                };
+            } else if (state === 'forgot') {
+                endpoint = 'forgot-password';
+                payload = { email: formData.email };
+            } else if (state === 'reset') {
+                endpoint = 'reset-password';
+                payload = { token: formData.token, password: formData.password };
+            }
+
             const response = await fetch(`http://localhost:5000/api/users/${endpoint}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             });
+
             const data = await response.json();
 
-            if (data.success) {
-                localStorage.setItem('token', data.token);
-                await loadUserProfile(); // Load profile immediately
-                
-                // If the backend returns user data, we can use it, otherwise let's just say "Welcome!"
-                const userName = data.user?.name || formData.name || 'User';
-                if (state === "login") {
-                    toast.success(`Welcome, ${userName}!`);
-                } else {
-                    toast.success(`Account created successfully, ${userName}!`);
-                }
-                
-                // Reset form so old data isn't there next time it opens
-                setFormData({ name: '', email: '', password: '' });
-                onClose();
-            } else {
-                toast.error(data.message || 'Authentication failed');
+            if (!data.success) {
+                toast.error(data.message || 'Operation failed');
+                return;
             }
+
+            if (state === 'login' || state === 'register') {
+                localStorage.setItem('token', data.token);
+                await loadUserProfile();
+
+                const userName = data.user?.name || formData.name || 'User';
+                toast.success(state === 'login' ? `Welcome, ${userName}!` : `Account created successfully, ${userName}!`);
+
+                setFormData({ name: '', email: '', password: '', token: '' });
+                onClose();
+                return;
+            }
+
+            if (state === 'forgot') {
+                if (data.resetToken) {
+                    setFormData(prev => ({ ...prev, token: data.resetToken }));
+                    setState('reset');
+                    toast.success('Reset token generated. Please enter it below.');
+                } else {
+                    toast.info(data.message || 'Check your email for the reset token.');
+                    // Stay in forgot state or handle differently
+                }
+                return;
+            }
+
+            if (state === 'reset') {
+                setFormData({ name: '', email: '', password: '', token: '' });
+                setState('login');
+                toast.success(data.message || 'Password changed successfully. You can now log in.');
+                return;
+            }
+
         } catch (error) {
             console.error("Error during authentication:", error);
             toast.error("An error occurred. Please try again.");
@@ -90,15 +128,18 @@ const UserLogin = ({ onClose }) => {
 
                 {/* Header */}
                 <h1 className="text-accent text-3xl mt-2 font-bold tracking-tight">
-                    {state === "login" ? "Welcome Back" : "Create Account"}
+                    {state === 'login' ? 'Welcome Back' : state === 'register' ? 'Create Account' : state === 'forgot' ? 'Forgot Password' : 'Reset Password'}
                 </h1>
                 <p className="text-primary text-sm mt-1 mb-8">
-                    {state === "login" ? "Please sign in to continue" : "Sign up to get started with us"}
+                    {state === 'login' && 'Please sign in to continue'}
+                    {state === 'register' && 'Sign up to get started with us'}
+                    {state === 'forgot' && 'Provide your email to receive password reset token'}
+                    {state === 'reset' && 'Enter token and new password'}
                 </p>
 
                 <div className="space-y-4">
                     {/* Name Input (Only for Sign Up) */}
-                    {state !== "login" && (
+                    {state === "register" && (
                         <div className={inputCls}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-slate-400" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <circle cx="12" cy="8" r="5" /> <path d="M20 21a8 8 0 0 0-16 0" /> </svg>
                             <input type="text" name="name" placeholder="Full Name" className="w-full bg-transparent text-black placeholder-primary border-none outline-none text-sm" value={formData.name} onChange={handleChange} required />
@@ -111,21 +152,41 @@ const UserLogin = ({ onClose }) => {
                         <input type="email" name="email" placeholder="Email Address" className="w-full bg-transparent text-black placeholder-primary border-none outline-none text-sm" value={formData.email} onChange={handleChange} required autoComplete="new-email" />
                     </div>
 
-                    {/* Password Input */}
-                    <div className={inputCls}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-slate-400" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 10 0v4" /> </svg>
-                        <input type="password" name="password" placeholder="Password" className="w-full bg-transparent text-black placeholder-slate-500 border-none outline-none text-sm" value={formData.password} onChange={handleChange} required autoComplete="new-password" />
-                    </div>
+                    {/* Token Input (for Reset) */}
+                    {state === 'reset' && (
+                        <div className={inputCls}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-slate-400" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <circle cx="12" cy="12" r="10" /> <line x1="12" y1="8" x2="12" y2="12" /> <line x1="12" y1="16" x2="12" y2="16" /> </svg>
+                            <input type="text" name="token" placeholder="Reset Token" className="w-full bg-transparent text-black placeholder-primary border-none outline-none text-sm" value={formData.token} onChange={handleChange} required />
+                        </div>
+                    )}
+
+                    {/* Password Input (Login/Register/Reset) */}
+                    {state !== 'forgot' && (
+                        <div className={inputCls}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-slate-400" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 10 0v4" /> </svg>
+                            <input type="password" name="password" placeholder="Password" className="w-full bg-transparent text-black placeholder-slate-500 border-none outline-none text-sm" value={formData.password} onChange={handleChange} required autoComplete="new-password" />
+                        </div>
+                    )}
                 </div>
 
-                {/* Forgot Password */}
-                {state === "login" && (
-                    <div className="mt-3 text-right">
-                        <button type="button" className="text-xs font-medium text-primary hover:text-shadow-text-secondary hover:underline transition-colors cursor-pointer">
+                {/* Forgot Password / Back Button */}
+                <div className="mt-3 text-right">
+                    {state === 'login' && (
+                        <button type="button" onClick={() => { setState('forgot'); setFormData({ name:'', email:'', password:'', token:'' }); }} className="text-xs font-medium text-primary hover:text-shadow-text-secondary hover:underline transition-colors cursor-pointer">
                             Forgot password?
                         </button>
-                    </div>
-                )}
+                    )}
+                    {state === 'forgot' && (
+                        <button type="button" onClick={() => { setState('login'); setFormData({ name:'', email:'', password:'', token:'' }); }} className="text-xs font-medium text-primary hover:text-shadow-text-secondary hover:underline transition-colors cursor-pointer">
+                            Back to login
+                        </button>
+                    )}
+                    {state === 'reset' && (
+                        <button type="button" onClick={() => { setState('login'); setFormData({ name:'', email:'', password:'', token:'' }); }} className="text-xs font-medium text-primary hover:text-shadow-text-secondary hover:underline transition-colors cursor-pointer">
+                            Back to login
+                        </button>
+                    )}
+                </div>
 
                 {/* Submit Button */}
                 <button 
@@ -133,7 +194,7 @@ const UserLogin = ({ onClose }) => {
                     disabled={isSubmitting}
                     className="mt-6 w-full h-12 rounded-xl text-white font-semibold tracking-wide bg-accent hover:bg-accent-hover shadow-lg shadow-indigo-600/30 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed" 
                 >   
-                    {isSubmitting ? "Please wait..." : (state === "login" ? "Login" : "Create Account")}
+                    {isSubmitting ? 'Please wait...' : (state === 'login' ? 'Login' : state === 'register' ? 'Create Account' : state === 'forgot' ? 'Send Reset Token' : 'Reset Password')}
                 </button>
 
                 {/* Toggle Login/Register */}
